@@ -1,2 +1,10 @@
-config/site.php
-files/cache/*
+# Vim
+*.swp
+
+# qmake
+src/*/moc/
+src/*/obj/
+src/*/Makefile
+
+src/TerrainDetection/Detection
+
