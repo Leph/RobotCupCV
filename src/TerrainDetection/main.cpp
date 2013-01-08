@@ -3,6 +3,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <opencv.hpp>
+#include <highgui/highgui.hpp>
 #include <unistd.h>
 
 using namespace cv;
@@ -14,7 +15,9 @@ int main()
 
     //Création de la fenêtre graphique
     namedWindow("win", CV_WINDOW_KEEPRATIO);
-    resizeWindow("win", 800, 600);
+    cvResizeWindow("win", 800, 600);
+    //namedWindow("win2", CV_WINDOW_KEEPRATIO);
+    //cvResizeWindow("win2", 800, 600);
 
     //Ouverture de la video
     char* videoname = (char*)"../../media/video-bruno.mp4";
@@ -28,18 +31,10 @@ int main()
     video >> frame;
     while (frame.data != NULL && frames.size() < maxFrame) {
         frames.push_back(frame.clone());
-        cout << frames.size() << endl;
         video >> frame;
+        cout << "." << flush;
     }
-    cout << "Frames count : " << frames.size() << endl;
-
-    //Affichage des images de la video
-    /*
-    for (size_t i=0;i<frames.size();i++) {
-        imshow("win", frames[i]);
-        waitKey(5);
-    }
-    */
+    cout << endl << "Frames count : " << frames.size() << endl;
 
     //Extraction des lignes
     for (size_t i=0;i<frames.size();i++) {
@@ -47,10 +42,38 @@ int main()
         cvtColor(tmp, tmp, CV_BGR2HLS);
         vector<Mat> tmp_channels;
         split(tmp, tmp_channels);
-        tmp = tmp_channels[1];
-        imshow("win", tmp);
-        waitKey(50);
+        Canny(tmp_channels[1], tmp, 200.0, 300.0, 5);
+
+        vector<vector<Point> > contours;
+        vector<Vec4i> hierarchy;
+        findContours(tmp, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_NONE);
+        Mat mask = Mat::zeros(tmp.rows, tmp.cols, CV_8UC1);
+        drawContours(mask, contours, -1, Scalar(0,0,255), 2, CV_FILLED, hierarchy);
+        /*
+        vector<Vec4i> lines;
+        HoughLines(tmp, lines, 1.0, 2.0, 1);
+        for(size_t i=0;i<lines.size();i++) {
+            line(frames[i], Point(lines[i][0], lines[i][1]),
+                Point(lines[i][2], lines[i][3]), Scalar(0,0,255), 3);
+        }
+        */
+        imshow("win", mask);
+        waitKey(10);
     }
+    return 0;
+
+    //Test extraction du terrain
+    /*
+    for (size_t i=0;i<frames.size();i++) {
+        Mat tmp = frames[i].clone();
+        cvtColor(tmp, tmp, CV_BGR2HLS);
+        vector<Mat> tmp_channels;
+        split(tmp, tmp_channels);
+        //inRange(tmp, Scalar(45, 0, 0), Scalar(65, 60, 255), tmp);
+        imshow("win", tmp);
+        waitKey();
+    }
+    */
 
     //Extraction du terrain
     for (size_t i=0;i<frames.size();i++) {

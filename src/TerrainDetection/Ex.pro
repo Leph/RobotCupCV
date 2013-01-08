@@ -4,10 +4,14 @@
 
 TEMPLATE = app
 TARGET = Detection
-INCLUDEPATH += /usr/local/include/opencv2
+#INCLUDEPATH += /usr/local/include/opencv2
+INCLUDEPATH += /usr/include/opencv2
 LIBPATH += /usr/local/lib/
+LIBPATH += /usr/lib/i386-linux-gnu/
 
-LIBS += -lopencv_core -lopencv_highgui -lopencv_features2d -lopencv_flann -lopencv_calib3d -lopencv_imgproc -lopencv_video -lopencv_nonfree
+LIBS += -lopencv_core -lopencv_highgui -lopencv_features2d -lopencv_flann 
+LIBS += -lopencv_calib3d -lopencv_imgproc -lopencv_video 
+#LIBS += -lopencv_nonfree
 
 HEADER = .hpp
 
