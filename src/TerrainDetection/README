@@ -1,0 +1,12 @@
+Usage :
+    qmake && make
+    ./Detection <mode>
+
+    <mode> : 
+    1 : espace de couleurs choisis BGR et HLS
+    2 : extraction des zones et dilatation
+    3 : détection de contours Canny
+    4 : filtre des contours
+    5 : détection des lignes Hough
+    6 : test algorithme détection lignes
+
